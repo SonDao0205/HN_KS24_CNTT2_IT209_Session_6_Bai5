@@ -1,0 +1,41 @@
+[Unit]
+Description=Java Spring Boot Application Service
+Documentation=https://docs.spring.io/spring-boot/docs/current/reference/html/
+After=network.target
+Wants=network.target
+
+[Service]
+# Tài khoản hệ thống chạy dịch vụ (non-root, không có shell đăng nhập)
+User=java-runner
+Group=java-runner
+
+# Lệnh thực thi chính
+# Mô phỏng ứng dụng Java bằng lệnh sleep dài hạn
+# Trong thực tế sẽ thay bằng: /usr/bin/java -jar /opt/java-app/app.jar
+ExecStart=/usr/bin/sleep infinity
+
+# Chính sách restart: chỉ restart khi tiến trình bị sập bất thường
+Restart=on-failure
+
+# Thời gian chờ trước khi restart (10 giây)
+RestartSec=10
+
+# Giới hạn số lần restart liên tiếp trong khoảng thời gian
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+# Biến môi trường cho ứng dụng Java (tuỳ chỉnh khi dùng thật)
+# Environment=JAVA_OPTS=-Xms256m -Xmx512m
+# Environment=SPRING_PROFILES_ACTIVE=production
+
+# Thư mục làm việc của ứng dụng
+# WorkingDirectory=/opt/java-app
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=java-app
+
+[Install]
+# Kích hoạt dịch vụ trong chế độ multi-user (không cần GUI)
+WantedBy=multi-user.target
